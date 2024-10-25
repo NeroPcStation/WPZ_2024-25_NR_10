@@ -1,10 +1,14 @@
 import os
 import datetime
+from logger import Logger
 import torch
 import torchvision
 import torchvision.transforms as transforms
 
 def main():
+    # Create Logger
+    logger = Logger("ResNet_logs.csv")
+
     # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -49,8 +53,6 @@ def main():
     print(f'Beginning training with {"GPU" if torch.cuda.is_available() else "CPU"}...')
     start_time = datetime.datetime.now()
 
-    min_loss = 1
-
     # Train the model...
     for epoch in range(num_epochs):
         for inputs, labels in train_loader:
@@ -69,15 +71,12 @@ def main():
             loss.backward()
             optimizer.step()
 
-        if loss < min_loss:
-            min_loss = loss
-            torch.save(model, 'best')
-
         # Print the loss for every epoch
         print(f'Epoch {epoch+1}/{num_epochs}, Loss: {loss.item():.4f}')
+        logger.log(epoch, round(loss.item(), 4))
     
     end_time = datetime.datetime.now()
-    torch.save(model, 'last')
+    torch.save(model, 'ResNet')
     print(f'Finished training, Loss: {loss.item():.4f}, Time: {end_time - start_time}')
     os.system("pause")
 
