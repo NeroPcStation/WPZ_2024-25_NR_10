@@ -34,7 +34,7 @@ def main(num_epochs=50):
             image.to(device)
 
             output = model(image)
-            loss = criterion(output.flatten().cpu(), torch.tensor(labels[label], dtype=torch.float32))
+            loss = criterion(output.cpu(), torch.tensor(labels[label], dtype=torch.float32))
 
             loss.backward()
             optimizer.step()
