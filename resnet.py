@@ -73,7 +73,7 @@ def main():
 
         # Print the loss for every epoch
         print(f'Epoch {epoch+1}/{num_epochs}, Loss: {loss.item():.4f}')
-        logger.log(epoch, round(loss.item(), 4))
+        logger.log(epoch+1, round(loss.item(), 4))
     
     end_time = datetime.datetime.now()
     torch.save(model, 'ResNet')

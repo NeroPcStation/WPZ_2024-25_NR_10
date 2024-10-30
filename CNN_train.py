@@ -41,7 +41,7 @@ def main(num_epochs=50):
 
             epoch_loss += loss.item()
         print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item():.4f}")
-        logger.log(epoch, round(epoch_loss/dataset.__len__(), 4))
+        logger.log(epoch+1, round(epoch_loss/dataset.__len__(), 4))
         model.save("CNN")
             
 if __name__ == '__main__':
