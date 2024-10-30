@@ -11,7 +11,7 @@ class Logger:
         self.tabular = {}
 
     def log(self, epoch, loss):
-        with open(self.filename, 'w') as file:
+        with open(self.filename, 'a') as file:
             if self.first_line:
                 file.write(f"epoch,avg_loss\n")
                 self.first_line = False
