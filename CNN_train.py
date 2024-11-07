@@ -21,7 +21,7 @@ def main(num_epochs=50):
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
-    train_dataset = torch.load("dataset_trenowania.pt")
+    train_dataset = torch.load("train_dataset.pt")
 
     dataset = list(train_dataset)
     random.shuffle(dataset)
