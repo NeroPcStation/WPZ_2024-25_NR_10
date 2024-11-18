@@ -5,72 +5,72 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from kaggle import api
 
-# Pobranie danych z Kaggle
+# Download data from Kaggle
 if not os.path.exists("data") and os.path.exists("data/train") and os.path.exists("data/test"):
     api.dataset_download_files("imsparsh/flowers-dataset", path="data", unzip=True)
 
 
-#definicja ścieżek do folderów
+# Define directory paths
 data_dir = 'data'
 train_dir = os.path.join(data_dir, 'train')
 test_dir = os.path.join(data_dir, 'test')
 
-# Transofracje danych do trenowania 
-transformacje_danych = {
+# Transform data for training 
+transform = {
   'train': transforms.Compose([
-    transforms.RandomResizedCrop(224),  # Losowe przycięcie i powiększenie do 224x224
-    transforms.RandomHorizontalFlip(),   # Losowe odwrócenie horyzontalne
-    transforms.RandomRotation(10),       # Losowe obrócenie o 10 stopni
-    transforms.Grayscale(num_output_channels=1),  # Konwersja do skali szarości z 1 kanałem
-    transforms.ToTensor(),              # Konwersja do tensora
-    transforms.Normalize([0.5], [0.5])  # Normalizacja z mean i std
+    transforms.RandomResizedCrop(224),  # Random crop and resize to 224x224
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(10),       # Random rotation by 10 degrees
+    transforms.Grayscale(num_output_channels=1),  # Convert to grayscale with 1 channel
+    transforms.ToTensor(),              # Convert to tensor
+    transforms.Normalize([0.5], [0.5])  # Normalize with mean and std
   ])
 }
 
-#Stworzenie datasetu
-dataset_trenowania = datasets.ImageFolder(train_dir, transformacje_danych['train'],None)
+# Create dataset
+train_dataset = datasets.ImageFolder(train_dir, transform['train'],None)
 
 
 
 
-print(dataset_trenowania) 
-# Funkcja do wczytania i przetworzenia obrazu
-# Jest ona wymagana ponieważ dane testowe nie posiadają class
-def wykonanie_transformacji(sciezka_obrazu):
-  # otworzenie obtazku za pomocą PIL
-  img = Image.open(sciezka_obrazu)
+print(train_dataset) 
+# Function to load and transform image
+# Required because test data doesn't have classes (?)
+def transform_image(image_path):
+  # Open image with PIL
+  img = Image.open(image_path)
  # print(img)
 
-  img = transforms.Resize(256)(img) #Skalowanie do 256x256
-  img = transforms.CenterCrop(224)(img)# przyciecie do 224x224
-  img = transforms.ToTensor()(img) # Konwersja do tensora
-  img = transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])(img)  # Normalizacja za pomocą ImageNet 
+  img = transforms.Resize(256)(img) # Resize to 256x256
+  img = transforms.CenterCrop(224)(img) # Crop to 224x224
+  img = transforms.ToTensor()(img) # Convert to tensor
+  img = transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])(img)  # Normalize with ImageNet 
   return img.unsqueeze(0)  
 
 
-testowe_zdjecia = []
-testowe_znaczniki = []  
-for filename in os.listdir(test_dir): # Przechodzimy przez wszystkie pliki w folderze testowym
-  # Branie pod uwage tylko plików jpg i png
+test_images = []
+test_labels = []  
+for filename in os.listdir(test_dir): # Iterate through all files in the test directory
+  # Only use jpg and png files
   if filename.endswith(".jpg") or filename.endswith(".png"):
 
-    sciezka_obrazu = os.path.join(test_dir, filename)
+    image_path = os.path.join(test_dir, filename)
 
-    # Wykonanie transformacji na obrazie
-    obraz = wykonanie_transformacji(sciezka_obrazu)
+    # Image transform
+    image = transform_image(image_path)
 
-    # Usunięcie dodatkowej wymiaru
-    obraz = torch.squeeze(obraz, 0)
+    # Remove additional dimension
+    image = torch.squeeze(image, 0)
 
-    # Dodanie obrazu do listy
-    testowe_zdjecia.append(obraz)
-testowe_znaczniki.append(-1)
+    # Append image to list
+    test_images.append(image)
+test_labels.append(-1)
 
-print (f'Nazwy klas: {dataset_trenowania.classes}')
+print (f'Class names: {train_dataset.classes}')
 
-#Zapisanie danych do plików
-torch.save(dataset_trenowania, 'dataset_trenowania.pt')
-torch.save(testowe_zdjecia, 'testowe_zdjecia.pt')
-torch.save(testowe_znaczniki, 'testowe_znaczniki.pt')
+# Save data
+torch.save(train_dataset, 'train_dataset.pt')
+torch.save(test_images, 'test_images.pt')
+torch.save(test_labels, 'test_labels.pt')
 
-print("Zakończono przygotowanie danych")
+print("Finished preparing data")
