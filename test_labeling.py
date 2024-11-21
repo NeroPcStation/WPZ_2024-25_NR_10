@@ -1,6 +1,7 @@
-from CNN import CNN
 import os
 import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from CNN import CNN
 from PIL import Image
 import torch
 import torchvision.transforms as transforms
