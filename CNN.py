@@ -22,7 +22,7 @@ class CNN(nn.Module):
             self._initialize_weights()
 
     def forward(self, x):
-        x = x.to(self.device)
+      #  x = x.to(self.device)
         x = self.pool(F.relu(self.c1(x)))
         x = self.pool(F.relu(self.c2(x)))
         x = x.view(-1, 16 * 53 * 53)

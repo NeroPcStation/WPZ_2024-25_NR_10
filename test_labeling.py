@@ -13,9 +13,10 @@ def main(path):
 
 def GetLabels(path):
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        ResNet = torch.load(os.path.join(script_dir, "ResNet"), weights_only=False)
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        ResNet = torch.load(os.path.join(script_dir, "ResNet"), weights_only=False, map_location=device)
         # cnn = CNN()
-        cnn = torch.load(os.path.join(script_dir, "CNN"), weights_only=False)
+        cnn = torch.load(os.path.join(script_dir, "CNN"), weights_only=False, map_location=device)
 
 
         ResNet_out = ResNet(ResNet_transform(path))
