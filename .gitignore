@@ -1,2 +1,5 @@
 flowers-dataset/
 __pycache__/
+gui/.vs/
+gui/bin/
+gui/obj/
